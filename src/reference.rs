@@ -1,7 +1,5 @@
 use core::convert::TryFrom;
 
-type Number = [u64; 4];
-
 const fn val_2(lo: u64, hi: u64) -> u128 {
     ((hi as u128) << 64) | (lo as u128)
 }

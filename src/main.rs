@@ -1,4 +1,5 @@
 mod reference;
+mod tuned;
 
 use criterion::{black_box, Criterion};
 use rand::random;
@@ -15,12 +16,22 @@ fn main() {
             black_box(remainder)
         });
     });
+    group.bench_function("tuned", move |bencher| {
+        bencher.iter(|| {
+            let n = black_box(n);
+            let mut result = n.clone();
+            let remainder = tuned::div1023(&mut result);
+            black_box(remainder)
+        });
+    });
     group.finish();
     criterion.final_summary();
 }
 
 #[cfg(test)]
 mod test {
+    use super::*;
+
     #[test]
     fn test_reference() {
         let n = [
@@ -41,5 +52,18 @@ mod test {
                 0x00004ce6a3f010e0
             ]
         );
+    }
+
+    #[test]
+    fn test_tuned() {
+        for _ in 0..1000 {
+            let n: [u64; 4] = random();
+            let mut expected_result = n.clone();
+            let expected_remainder = reference::div1023(&mut expected_result);
+            let mut result = n.clone();
+            let remainder = tuned::div1023(&mut result);
+            assert_eq!(result, expected_result);
+            assert_eq!(remainder, expected_remainder);
+        }
     }
 }
