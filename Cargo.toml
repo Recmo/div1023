@@ -1,7 +1,9 @@
 [package]
 name = "div1023"
-author = "Remco Bloemen <remco@wicked.ventures>
+author = "Remco Bloemen <remco@wicked.ventures>"
 version = "0.1.0"
 edition = "2018"
 
 [dependencies]
+rand = "0.8"
+criterion = "0.3"
