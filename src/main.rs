@@ -1,4 +1,8 @@
 //! See <https://danlark.org/2020/06/14/128-bit-division/>
+//! See <https://gmplib.org/~tege/division-paper.pdf>
+//! See <https://github.com/llvm/llvm-project/blob/main/compiler-rt/lib/builtins/udivmodti4.c>
+//! See <https://github.com/ridiculousfish/libdivide/blob/master/libdivide.h#L368>
+//! See <https://github.com/alisw/GMP/blob/2bbd52703e5af82509773264bfbd20ff8464804f/mpn/generic/div_qr_1.c>
 
 #![feature(asm)]
 #![feature(core_intrinsics)]

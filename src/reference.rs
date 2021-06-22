@@ -14,7 +14,7 @@ const fn mul_2(a: u64, b: u64) -> u128 {
 // (Note that we require d > hi for this)
 // TODO: If divq is not supported, use a fast software implementation:
 // See https://gmplib.org/~tege/division-paper.pdf
-fn divrem_2by1(lo: u64, hi: u64, d: u64) -> (u64, u64) {
+pub fn divrem_2by1(lo: u64, hi: u64, d: u64) -> (u64, u64) {
     debug_assert!(d > 0);
     debug_assert!(d > hi);
     let d = u128::from(d);
@@ -33,7 +33,7 @@ fn divrem_2by1(lo: u64, hi: u64, d: u64) -> (u64, u64) {
     (q as u64, r as u64)
 }
 
-fn divrem_nby1(numerator: &mut [u64], divisor: u64) -> u64 {
+pub fn divrem_nby1(numerator: &mut [u64], divisor: u64) -> u64 {
     debug_assert!(divisor > 0);
     let mut remainder = 0;
     for i in (0..numerator.len()).rev() {
