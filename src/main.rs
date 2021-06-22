@@ -8,6 +8,7 @@
 #![feature(core_intrinsics)]
 
 mod asm;
+mod hack;
 mod mgdiv;
 mod reference;
 mod tuned;
@@ -40,6 +41,14 @@ fn main() {
             let n = black_box(n);
             let mut result = n.clone();
             let remainder = asm::div1023(&mut result);
+            black_box(remainder)
+        });
+    });
+    group.bench_function("hack", move |bencher| {
+        bencher.iter(|| {
+            let n = black_box(n);
+            let mut result = n.clone();
+            let remainder = hack::div1023(&mut result);
             black_box(remainder)
         });
     });

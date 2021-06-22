@@ -1,6 +1,7 @@
 use core::intrinsics::unlikely;
 
 const D: u64 = 1023;
+const DN: u64 = 1023 << 54;
 const R: u64 = 0x0040100401004010; // Floor(2^64 / D)
 
 const fn val_2(lo: u64, hi: u64) -> u128 {
@@ -80,7 +81,7 @@ fn divrem_2by1_mg_4(u0: u64, u1: u64, d: u64, v: u64) -> (u64, u64) {
     dbg!(q, r);
 
     assert!(r < d);
-    assert_eq!(val_2(u0, u1), umul(q, d) + (r as u128));
+    // assert_eq!(val_2(u0, u1), umul(q, d) + (r as u128));
     (q, r)
 }
 
@@ -90,7 +91,10 @@ fn divrem_2by1(lo: u64, hi: u64) -> (u64, u64) {
     let u1 = (hi << 54) | (lo >> 10);
     let u0 = lo << 54;
 
+    let (q2, r2) = divrem_2by1_mg(u0, u1, d, v);
     let (q, mut r) = divrem_2by1_mg(u0, u1, d, v);
+    assert_eq!(q, q2);
+    assert_eq!(r, r2);
 
     r >>= 54;
     (q, r)
@@ -117,31 +121,36 @@ mod test {
     use proptest::proptest;
 
     #[test]
+    fn test_reciprocal() {
+        // Use the formula in III.A
+        let n = val_2(u64::MAX, u64::MAX - DN);
+        let v_computed = n / (DN as u128);
+        assert_eq!(R as u128, v_computed)
+    }
+
+    #[test]
     fn test_div_2by1_mg_zero() {
-        let d = 0xffc0000000000000;
-        let v = 0x0040100401004010;
         let u0 = 0;
         let u1 = 0;
-        let expected = reference::divrem_2by1(u0, u1, d);
-        let result = divrem_2by1_mg(u0, u1, d, v);
+        let expected = reference::divrem_2by1(u0, u1, DN);
+        let result = divrem_2by1_mg(u0, u1, DN, R);
+        dbg!(result);
         assert_eq!(result, expected);
     }
 
     #[test]
     fn test_div_2by1_mg() {
-        let d = 0xffc0000000000000;
-        let v = 0x0040100401004010;
-        proptest!(|(u0 in 0..=u64::MAX, u1 in 0_u64..d)| {
-            let expected = reference::divrem_2by1(u0, u1, d);
-            let result = divrem_2by1_mg(u0, u1, d, v);
+        proptest!(|(u0 in 0..=u64::MAX, u1 in 0_u64..DN)| {
+            let expected = reference::divrem_2by1(u0, u1, DN);
+            let result = divrem_2by1_mg(u0, u1, DN, R);
             assert_eq!(result, expected);
         });
     }
 
     #[test]
     fn test_div_2by1() {
-        proptest!(|(lo in 0..=u64::MAX, hi in 0_u64..1023)| {
-            let expected = reference::divrem_2by1(lo, hi, 1023);
+        proptest!(|(lo in 0..=u64::MAX, hi in 0_u64..D)| {
+            let expected = reference::divrem_2by1(lo, hi, D);
             let result = divrem_2by1(lo, hi);
             assert_eq!(result, expected);
         });
