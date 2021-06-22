@@ -44,6 +44,7 @@ pub fn divrem_nby1(numerator: &mut [u64], divisor: u64) -> u64 {
     remainder
 }
 
+#[inline(never)] // Ensure this exist as a symbol
 pub fn div1023(numerator: &mut [u64; 4]) -> u64 {
     divrem_nby1(numerator, 1023)
 }

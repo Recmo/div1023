@@ -93,11 +93,10 @@ fn divrem_2by1(lo: u64, hi: u64) -> (u64, u64) {
     let (q, mut r) = divrem_2by1_mg(u0, u1, d, v);
 
     r >>= 54;
-    // r += 1; // Pourquoi?
     (q, r)
 }
 
-#[inline(never)]
+#[inline(never)] // Ensure this exist as a symbol
 pub fn div1023(numerator: &mut [u64; 4]) -> u64 {
     let remainder = 0;
     let (ni, remainder) = divrem_2by1(numerator[3], remainder);
