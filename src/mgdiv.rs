@@ -30,7 +30,15 @@ fn divrem_2by1_mg(u0: u64, u1: u64, d: u64, v: u64) -> (u64, u64) {
     let mut q = ((umul(v, u1) >> 64) as u64) + u1;
     let p = umul(q, d);
     let mut r = val_2(u0, u1) - p;
-    while r >= (d as u128) {
+    if r >= (d as u128) {
+        q += 1;
+        r -= d as u128;
+    }
+    if r >= (d as u128) {
+        q += 1;
+        r -= d as u128;
+    }
+    if r >= (d as u128) {
         q += 1;
         r -= d as u128;
     }
