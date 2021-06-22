@@ -1,6 +1,7 @@
 //! See <https://danlark.org/2020/06/14/128-bit-division/>
 
 #![feature(asm)]
+#![feature(core_intrinsics)]
 
 mod asm;
 mod mgdiv;
@@ -38,7 +39,6 @@ fn main() {
             black_box(remainder)
         });
     });
-    /*
     group.bench_function("mgdiv", move |bencher| {
         bencher.iter(|| {
             let n = black_box(n);
@@ -47,7 +47,6 @@ fn main() {
             black_box(remainder)
         });
     });
-    */
     group.finish();
     criterion.final_summary();
 }
