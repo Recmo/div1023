@@ -1,3 +1,6 @@
+#![feature(asm)]
+
+mod asm;
 mod reference;
 mod tuned;
 
@@ -21,6 +24,14 @@ fn main() {
             let n = black_box(n);
             let mut result = n.clone();
             let remainder = tuned::div1023(&mut result);
+            black_box(remainder)
+        });
+    });
+    group.bench_function("asm", move |bencher| {
+        bencher.iter(|| {
+            let n = black_box(n);
+            let mut result = n.clone();
+            let remainder = asm::div1023(&mut result);
             black_box(remainder)
         });
     });
@@ -62,6 +73,19 @@ mod test {
             let expected_remainder = reference::div1023(&mut expected_result);
             let mut result = n.clone();
             let remainder = tuned::div1023(&mut result);
+            assert_eq!(result, expected_result);
+            assert_eq!(remainder, expected_remainder);
+        }
+    }
+
+    #[test]
+    fn test_asm() {
+        for _ in 0..1000 {
+            let n: [u64; 4] = random();
+            let mut expected_result = n.clone();
+            let expected_remainder = reference::div1023(&mut expected_result);
+            let mut result = n.clone();
+            let remainder = asm::div1023(&mut result);
             assert_eq!(result, expected_result);
             assert_eq!(remainder, expected_remainder);
         }
