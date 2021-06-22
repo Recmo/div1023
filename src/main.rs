@@ -1,6 +1,9 @@
+//! See <https://danlark.org/2020/06/14/128-bit-division/>
+
 #![feature(asm)]
 
 mod asm;
+mod mgdiv;
 mod reference;
 mod tuned;
 
@@ -35,6 +38,16 @@ fn main() {
             black_box(remainder)
         });
     });
+    /*
+    group.bench_function("mgdiv", move |bencher| {
+        bencher.iter(|| {
+            let n = black_box(n);
+            let mut result = n.clone();
+            let remainder = mgdiv::div1023(&mut result);
+            black_box(remainder)
+        });
+    });
+    */
     group.finish();
     criterion.final_summary();
 }
@@ -86,6 +99,19 @@ mod test {
             let expected_remainder = reference::div1023(&mut expected_result);
             let mut result = n.clone();
             let remainder = asm::div1023(&mut result);
+            assert_eq!(result, expected_result);
+            assert_eq!(remainder, expected_remainder);
+        }
+    }
+
+    #[test]
+    fn test_mgdiv() {
+        for _ in 0..1000 {
+            let n: [u64; 4] = random();
+            let mut expected_result = n.clone();
+            let expected_remainder = reference::div1023(&mut expected_result);
+            let mut result = n.clone();
+            let remainder = mgdiv::div1023(&mut result);
             assert_eq!(result, expected_result);
             assert_eq!(remainder, expected_remainder);
         }

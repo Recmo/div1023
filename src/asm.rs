@@ -3,7 +3,6 @@
 // See `cargo asm div1023::asm::div1023`
 // See `objdump ./target/release/div1023 --disassemble-symbols=___udivti3`
 
-#[inline(always)]
 fn divrem_2by1(lo: u64, hi: u64) -> (u64, u64) {
     let d: u64 = 1023;
     let q: u64;
@@ -21,7 +20,6 @@ fn divrem_2by1(lo: u64, hi: u64) -> (u64, u64) {
     (q, r)
 }
 
-#[inline(never)]
 pub fn div1023(numerator: &mut [u64; 4]) -> u64 {
     let mut remainder = 0;
     let (ni, remainder) = divrem_2by1(numerator[3], remainder);

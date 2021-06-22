@@ -3,14 +3,13 @@ const fn val_2(lo: u64, hi: u64) -> u128 {
 }
 
 fn divrem_2by1(lo: u64, hi: u64) -> (u64, u64) {
-    let d = 1023_u128;
+    let D: u128 = 1023;
     let n = val_2(lo, hi);
-    let q = n / d;
-    let r = n % d;
-    (q as u64, r as u64)
+    let q = (n / D) as u64;
+    let r = (n % D) as u64;
+    (q, r)
 }
 
-// #[inline(never)]
 pub fn div1023(numerator: &mut [u64; 4]) -> u64 {
     let mut remainder = 0;
     let (ni, remainder) = divrem_2by1(numerator[3], remainder);
@@ -24,8 +23,8 @@ pub fn div1023(numerator: &mut [u64; 4]) -> u64 {
     remainder
 }
 
-// Fully inlined version has no advantage:
-fn div1023_inlined(numerator: &mut [u64; 4]) -> u64 {
+// Fully inlined version has no advantage, compiler does the same
+fn _div1023_inlined(numerator: &mut [u64; 4]) -> u64 {
     const D: u128 = 1023;
 
     let mut n = numerator[3] as u128;
